@@ -1,0 +1,45 @@
+package org.nic.pmusha.enums;
+
+public interface UserActionConstant {
+
+	public static final Integer CHANGE_PASSWORD = 1;
+	public static final Integer FORGOT_USER = 2;
+	public static final Integer FORGOT_PASSWORD = 3;
+	public static final Integer USER_APPROVE = 4;
+	public static final Integer USER_DISAPPROVE = 5;
+	public static final Integer USER_DELETE = 6;
+	public static final Integer USER_INACTIVE = 7;
+	public static final Integer USER_CREATION = 8;
+	public static final Integer USER_LOGIN_SUCCESS = 9;
+	public static final Integer USER_LOGOUT = 10;
+	public static final Integer ADD_FOCUS_DISTRICT = 11;
+	public static final Integer MODIFY_FOCUS_DISTRICT = 12;
+	public static final Integer FREEZE_FOCUS_DISTRICT = 13;
+	public static final Integer CREATE_MERU = 14;
+	public static final Integer MODIFY_MERU = 15;
+	public static final Integer DELETE_MERU = 16;
+	public static final Integer FREEZE_MERU = 17;
+	public static final Integer CREATE_STRENGTHENING_UNIVERSITY = 18;
+	public static final Integer MODIFY_STRENGTHENING_UNIVERSITY = 19;
+	public static final Integer DELETE_STRENGTHENING_UNIVERSITY = 20;
+	public static final Integer FREEZE_STRENGTHENING_UNIVERSITY = 21;
+	public static final Integer CREATE_STRENGTHENING_COLLEGE = 22;
+	public static final Integer MODIFY_STRENGTHENING_COLLEGE = 23;
+	public static final Integer DELETE_STRENGTHENING_COLLEGE = 24;
+	public static final Integer FREEZE_STRENGTHENING_COLLEGE = 25;
+	public static final Integer CREATE_NEW_MODEL_DEGREE_COLLEGE = 26;
+	public static final Integer FREEZE_GENDER_INCLUSION_AND_EQUITY_INITIATIVES = 27;
+	public static final Integer MOU_UPLOADED = 28;
+	public static final Integer MOU_RE_UPLOADED = 29;
+	public static final Integer MOU_DELETED = 30;
+	public static final Integer ACTIVITY_CREATED = 31;
+	public static final Integer ACTIVITY_MODIFIED = 32;
+	public static final Integer ACTIVITY_DELETED = 33;
+	public static final Integer ACTIVITY_FREEZED = 34;
+	public static final Integer MODIFY_NEW_MODEL_DEGREE_COLLEGE = 35;
+	public static final Integer DELETE_NEW_MODEL_DEGREE_COLLEGE = 36;
+	public static final Integer FREEZE_NEW_MODEL_DEGREE_COLLEGE = 37;
+	public static final Integer CREATE_GENDER_INCLUSION_AND_EQUITY_INITIATIVES = 38;
+	public static final Integer MODIFY_GENDER_INCLUSION_AND_EQUITY_INITIATIVES = 39;
+	public static final Integer DELETE_GENDER_INCLUSION_AND_EQUITY_INITIATIVES = 40;
+}

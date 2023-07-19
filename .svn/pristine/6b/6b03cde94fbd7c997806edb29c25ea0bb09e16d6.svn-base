@@ -1,0 +1,267 @@
+package org.nic.pmusha.controller;
+
+import org.nic.pmusha.security.JwtConfig;
+import org.nic.pmusha.service.UserService;
+import org.nic.pmusha.userdao.UserDao;
+import org.nic.pmusha.userdao.UserDaoImpl;
+import org.nic.pmusha.usereo.ActivityDetailsEO;
+import org.nic.pmusha.usereo.ComponentInstituteMappingEO;
+import org.nic.pmusha.usereo.FocusDistrictEO;
+import org.nic.pmusha.usereo.MouDocumentsEO;
+import org.nic.pmusha.usereo.RefActivityMasterEO;
+import org.nic.pmusha.usereo.RefComponentsEO;
+import org.nic.pmusha.usereo.RefDistrictEO;
+import org.nic.pmusha.usereo.RefDistrictIndicatorsEO;
+import org.nic.pmusha.usereo.RefDocumentEO;
+import org.nic.pmusha.usereo.RefGenderEO;
+import org.nic.pmusha.usereo.RefIndicatorsEO;
+import org.nic.pmusha.usereo.RefNaacAccreditation;
+import org.nic.pmusha.usereo.RefPmUshaInstitutionTypeEO;
+import org.nic.pmusha.usereo.RefStateCategoryEO;
+import org.nic.pmusha.usereo.RefStateEO;
+import org.nic.pmusha.usereo.RefUserRoleMasterEO;
+import org.nic.pmusha.usereo.RefUserTypeEO;
+import org.nic.pmusha.usereo.UserMaster;
+import org.nic.pmusha.uservo.FoucsDistrictIndicatorVO;
+import org.nic.pmusha.utility.PdfOperation;
+import org.nic.pmusha.utility.ReturnResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
+
+@RestController
+@RequestMapping(value = "/auth/users")
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
+public class PmUshaController {
+
+    private static final Logger logger = LoggerFactory.getLogger(PmUshaController.class);
+
+    @Autowired
+    UserService userService;
+    @Autowired
+    UserDaoImpl userDaoImpl;
+    @Autowired
+    JwtConfig jwtConfig;
+
+    @Autowired
+    UserDao userDao;
+    @Autowired
+    PdfOperation pdfOperation;
+
+    @GetMapping(value = "/hasaccess/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Boolean checkUrlAccessibility(@PathVariable String username, @RequestParam String url) {
+        logger.info("UserController : checkUrlAccessibility method invoked : {}");
+        Boolean hasURLAccess = userService.hasURLAccess(username, url);
+        logger.info("USERNAME: " + username, " URL: " + url, " RESULT: " + hasURLAccess);
+        return hasURLAccess;
+    }
+
+    // @GetMapping(value = "/isusernameexist/{username}", produces =
+    // MediaType.APPLICATION_JSON_VALUE)
+    public Boolean isUserNameExist(@PathVariable String username) {
+        logger.info("UserController : isUserNameExist method invoked : {}");
+        Boolean isUserNameExist = userService.isUserNameExist(username);
+        return isUserNameExist;
+    }
+
+    @GetMapping(value = "/user/username", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Long fetchUserDetails(@RequestParam String username) {
+        logger.info("UserController : fetchUserDetails method invoked : {}");
+        return userService.fetchUserDetailsFromUsername(username);
+    }
+
+    @GetMapping(value = "/user-master")
+    public List<UserMaster> fetchUserDetailsFromUserId(@RequestParam(required = false) String userId) {
+        List<UserMaster> collegeCourse = userService.fetchUserDetailsFromUserId(userId);
+        return collegeCourse;
+    }
+
+    @PostMapping(value = "/focus-district")
+    public ResponseEntity<ReturnResponse> saveOrUpdateFocusDistrict(@RequestBody List<FocusDistrictEO> userMaster,
+                                                                    HttpServletRequest request) {
+        List<FocusDistrictEO> masterEO = userService.saveOrUpdateFocusDistrict(userMaster, request);
+        ReturnResponse returnResponse = ((masterEO != null)
+                ? new ReturnResponse(HttpStatus.OK.value(), "Focus District Added Successfully.")
+                : new ReturnResponse(HttpStatus.OK.value(), "Done."));
+        return new ResponseEntity<>(returnResponse, HttpStatus.valueOf(returnResponse.getStatus()));
+    }
+
+    @GetMapping(value = "/focus-district")
+    public List<FocusDistrictEO> fetchAllFocusDistrictFromUserId(@RequestParam(required = false) String userId) {
+        List<FocusDistrictEO> collegeCourse = userService.fetchAllFocusDistrictFromUserId(userId);
+        return collegeCourse;
+    }
+
+    @GetMapping(value = "/ref-component")
+    public List<RefComponentsEO> fetchAllComponent() {
+        List<RefComponentsEO> collegeCourse = userService.fetchAllComponent();
+        return collegeCourse;
+    }
+
+    @GetMapping(value = "/ref-indicators")
+    public List<RefIndicatorsEO> fetchAllIndicators() {
+        List<RefIndicatorsEO> collegeCourse = userService.fetchAllIndicators();
+        return collegeCourse;
+    }
+
+    @GetMapping(value = "/ref-activity")
+    public List<RefActivityMasterEO> fetchAllActivity() {
+        List<RefActivityMasterEO> collegeCourse = userService.fetchAllActivity();
+        return collegeCourse;
+    }
+
+    @GetMapping(value = "/ref-user-role")
+    public List<RefUserRoleMasterEO> fetchAllUserRole() {
+        List<RefUserRoleMasterEO> collegeCourse = userService.fetchAllUserRole();
+        return collegeCourse;
+    }
+
+    @GetMapping(value = "/ref-user-type")
+    public List<RefUserTypeEO> fetchAllUserType() {
+        List<RefUserTypeEO> collegeCourse = userService.fetchAllUserType();
+        return collegeCourse;
+    }
+
+    @GetMapping(value = "/ref-document-type")
+    public List<RefDocumentEO> fetchAllDocumentType() {
+        List<RefDocumentEO> collegeCourse = userService.fetchAllDocumentType();
+        return collegeCourse;
+    }
+
+    @GetMapping(value = "/ref-gender")
+    public List<RefGenderEO> fetchAllGender() {
+        List<RefGenderEO> collegeCourse = userService.fetchAllGender();
+        return collegeCourse;
+    }
+
+    @GetMapping(value = "/ref-state")
+    public List<RefStateEO> fetchAllState() {
+        List<RefStateEO> collegeCourse = userService.fetchAllState();
+        return collegeCourse;
+    }
+
+    @GetMapping(value = "/ref-state_category")
+    public List<RefStateCategoryEO> fetchAllStateCategory() {
+        List<RefStateCategoryEO> collegeCourse = userService.fetchAllStateCategory();
+        return collegeCourse;
+    }
+
+    @PostMapping(value = "/create-mou", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ReturnResponse> saveOrUpdateMou(@ModelAttribute MouDocumentsEO letter,
+                                                          @RequestPart("file") MultipartFile file, HttpServletRequest request) throws IOException {
+        if (!file.getContentType().equals("application/pdf")) {
+            return new ResponseEntity<>(new ReturnResponse(HttpStatus.BAD_REQUEST.value(),
+                    "Incorrect file type, PDF required."), HttpStatus.BAD_REQUEST);
+        }
+        byte[] byteArr = file.getBytes();
+        boolean isPd = pdfOperation.isPdf(byteArr);
+        if (!isPd) {
+            return new ResponseEntity<>(new ReturnResponse(HttpStatus.BAD_REQUEST.value(), "Incorrect file type, PDF required."), HttpStatus.BAD_REQUEST);
+        }
+        String fileName = file.getOriginalFilename();
+        letter.setFileName(fileName);
+        letter.setDocumentFile(byteArr);
+        letter.setDocumentType(letter.getDocumentType());
+        letter.setMouTitle(letter.getMouTitle());
+        letter.setId(0);
+        letter.setUploadedBy(letter.getUploadedBy());
+        letter.setDocumentFile(byteArr);
+        if (request != null) {
+            letter.setIpAddress(request.getHeader("X-Forwarded-For"));
+            if (letter.getIpAddress() == null || "".equals(letter.getIpAddress())) {
+                letter.setIpAddress(request.getRemoteAddr());
+            }
+        }
+        MouDocumentsEO masterEO = userService.saveOrUpdateMou(letter);
+        ReturnResponse returnResponse = ((masterEO != null) ? new ReturnResponse(HttpStatus.OK.value(), "Mou Document Saved Successfully.") : new ReturnResponse(HttpStatus.BAD_REQUEST.value(), "Bad Request."));
+        return new ResponseEntity<>(returnResponse, HttpStatus.valueOf(returnResponse.getStatus()));
+    }
+
+    @GetMapping(value = "/mou-documents")
+    public List<MouDocumentsEO> fetchAllMouDocuments(@RequestParam(required = false) String userId) {
+        List<MouDocumentsEO> collegeCourse = userService.fetchAllMouDocuments(userId);
+        return collegeCourse;
+    }
+
+    @PostMapping(value = "/activity-details")
+    public ResponseEntity<ReturnResponse> saveOrUpdateActivityDetails(@RequestBody List<ActivityDetailsEO> activityDetails,
+                                                                      HttpServletRequest request) {
+        List<ActivityDetailsEO> masterEO = userService.saveOrUpdateActivityDetails(activityDetails, request);
+        ReturnResponse returnResponse = ((masterEO != null)
+                ? new ReturnResponse(HttpStatus.OK.value(), "Institute Activities Added Successfully.")
+                : new ReturnResponse(HttpStatus.OK.value(), "Done."));
+        return new ResponseEntity<>(returnResponse, HttpStatus.valueOf(returnResponse.getStatus()));
+    }
+
+    @GetMapping(value = "/activity-details")
+    public List<ActivityDetailsEO> fetchAllActivityDetails(@RequestParam(required = false) String userId) {
+        List<ActivityDetailsEO> collegeCourse = userService.fetchAllActivityDetails(userId);
+        return collegeCourse;
+    }
+
+    @PostMapping(value = "/component-institute-mapping")
+    public ResponseEntity<ReturnResponse> saveOrUpdateComponentInstituteMapping(@RequestBody List<ComponentInstituteMappingEO> componentInstituteMapping,
+                                                                                HttpServletRequest request) {
+        List<ComponentInstituteMappingEO> masterEO = userService.saveOrUpdateComponentInstituteMapping(componentInstituteMapping, request);
+        ReturnResponse returnResponse = ((masterEO != null)
+                ? new ReturnResponse(HttpStatus.OK.value(), "Component Institute Mapping Added Successfully.")
+                : new ReturnResponse(HttpStatus.OK.value(), "Done."));
+        return new ResponseEntity<>(returnResponse, HttpStatus.valueOf(returnResponse.getStatus()));
+    }
+
+    @GetMapping(value = "/component-institute-mapping")
+    public List<ComponentInstituteMappingEO> fetchAllComponentInstituteMapping(@RequestParam(required = false) String userId) {
+        List<ComponentInstituteMappingEO> collegeCourse = userService.fetchAllComponentInstituteMapping(userId);
+        return collegeCourse;
+    }
+
+    @PostMapping(value = "/focus-district-save")
+    public ResponseEntity<ReturnResponse> saveOrUpdateFocusDistrictData(@RequestBody List<RefDistrictEO> userMaster,
+                                                                        HttpServletRequest request) {
+        List<RefDistrictEO> masterEO = userService.saveOrUpdateFocusDistrictData(userMaster, request);
+        ReturnResponse returnResponse = ((masterEO != null)
+                ? new ReturnResponse(HttpStatus.OK.value(), "Focus District Added Successfully.")
+                : new ReturnResponse(HttpStatus.OK.value(), "Done."));
+        return new ResponseEntity<>(returnResponse, HttpStatus.valueOf(returnResponse.getStatus()));
+    }
+
+    @GetMapping(value = "/focus-district-get")
+    public List<FoucsDistrictIndicatorVO> fetchAllFocusDistrict(@RequestParam(required = false) String stateId) {
+        List<FoucsDistrictIndicatorVO> collegeCourse = userService.fetchAllFocusDistrict(stateId);
+        return collegeCourse;
+    }
+	@GetMapping(value = "/ref-pmusha-institution-type")
+    public List<RefPmUshaInstitutionTypeEO> fetchAllPmUshaInstitutionType() {
+        return userService.fetchAllPmUshaInstitutionType();
+    }
+
+    @GetMapping(value = "/ref-district-indicator")
+    public List<RefDistrictIndicatorsEO> fetchAllDistrictIndicators() {
+        List<RefDistrictIndicatorsEO> collegeCourse = userService.fetchAllDistrictIndicators();
+        return collegeCourse;
+    }
+
+
+    @GetMapping(value = "/ref-naac-accreditation")
+    public List<RefNaacAccreditation> fetchAllNaacAccreditation() {
+        return userService.fetchAllNaacAccreditation();
+    }
+
+}

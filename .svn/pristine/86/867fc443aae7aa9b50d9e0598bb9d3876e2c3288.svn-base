@@ -1,0 +1,25 @@
+package org.nic.pmusha.userdao;
+
+import org.nic.pmusha.responseDto.StateBasicInfoDTO;
+import org.nic.pmusha.usereo.StateBasicInfo;
+import org.nic.pmusha.usereo.StateBasicInfoEO;
+import org.nic.pmusha.usereo.StateProfileDocument;
+
+import java.math.BigInteger;
+import java.util.List;
+
+public interface StateProfileDao {
+    StateBasicInfoDTO update(StateBasicInfoDTO basicInfo);
+
+    List<StateBasicInfo> getAll(String stateCode);
+
+    StateBasicInfoEO get(String stateCode);
+
+    StateBasicInfoEO save(StateBasicInfoEO basicInfo);
+
+    StateBasicInfoEO update(StateBasicInfoEO basicInfo);
+
+    BigInteger getTotalDistrict(String stateCode);
+
+    StateProfileDocument getProfile(String stateCode);
+}

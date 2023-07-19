@@ -1,0 +1,74 @@
+package org.nic.pmusha.controller;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.nic.pmusha.responseDto.ReturnResponse;
+import org.nic.pmusha.responseDto.StateBasicInfoDTO;
+import org.nic.pmusha.service.StateProfileService;
+import org.nic.pmusha.usereo.RefStateCategoryEO;
+import org.nic.pmusha.usereo.StateBasicInfo;
+import org.nic.pmusha.usereo.StateBasicInfoEO;
+import org.nic.pmusha.uservo.StateBasicInfoVO;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.extern.log4j.Log4j2;
+
+@RestController
+@RequestMapping(value = "/state-profile")
+@Log4j2
+//@CrossOrigin("*")
+public class StateProfileController {
+    @Autowired
+    private StateProfileService profileService;
+
+    @PostMapping
+    public ResponseEntity<ReturnResponse> saveStateProfile(@RequestParam(required = false) MultipartFile files, @ModelAttribute StateBasicInfoVO basicInfoVO
+            /*@RequestBody StateBasicInfoDTO basicInfo*/) {
+        StateBasicInfoDTO basicInfo = new StateBasicInfoDTO();
+        StateBasicInfoEO basicInfoEO = new StateBasicInfoEO();
+        BeanUtils.copyProperties(basicInfoVO, basicInfoEO);
+        basicInfoEO.setStateCategory(new RefStateCategoryEO(basicInfoVO.getStateCategoryId(), basicInfoVO.getStateCategoryName()));
+        basicInfoEO.setDateShec(basicInfoVO.getShecDate());
+        basicInfo.setStateBasicInfo(basicInfoEO);
+       /* try {
+            basicInfo = new ObjectMapper().readValue(basicInfoJson, StateBasicInfoDTO.class);
+        } catch (IOException exception) {
+            ReturnResponse returnResponse = new ReturnResponse("Request Cannot Be Processed due to " + exception.getMessage() + ". " +
+                    "Please Try Again.", HttpStatus.UNPROCESSABLE_ENTITY.value(), null);
+            return new ResponseEntity<>(returnResponse, HttpStatus.valueOf(returnResponse.getStatus()));
+        }*/
+        Object stateBasicInfo = profileService.save(basicInfo, files);
+        ReturnResponse returnResponse = stateBasicInfo != null ?
+                new ReturnResponse("success ", HttpStatus.OK.value(), stateBasicInfo) : new ReturnResponse("Request Cannot Be Processed. Please Try Again.", HttpStatus.UNPROCESSABLE_ENTITY.value(), null);
+        return new ResponseEntity<>(returnResponse, HttpStatus.valueOf(returnResponse.getStatus()));
+
+    }
+
+
+    @PostMapping("/state-basic-detail")
+    public ResponseEntity<ReturnResponse> saveStateProfile(@RequestBody StateBasicInfoDTO basicInfo) {
+        Object stateBasicInfo = profileService.save(basicInfo, null);
+        ReturnResponse returnResponse = stateBasicInfo != null ?
+                new ReturnResponse("success ", HttpStatus.OK.value(), stateBasicInfo) : new ReturnResponse("Request Cannot Be Processed. Please Try Again.", HttpStatus.UNPROCESSABLE_ENTITY.value(), null);
+        return new ResponseEntity<>(returnResponse, HttpStatus.valueOf(returnResponse.getStatus()));
+    }
+
+    @GetMapping
+    public ResponseEntity<ReturnResponse> getStateProfile(@RequestParam(required = false, defaultValue = "ALL") String stateCode) {
+        List<StateBasicInfo> stateBasicInfo = profileService.get(stateCode);
+        ReturnResponse returnResponse = new ReturnResponse("success ", HttpStatus.OK.value(), stateBasicInfo != null ? stateBasicInfo : Collections.EMPTY_LIST);
+        return new ResponseEntity<>(returnResponse, HttpStatus.valueOf(returnResponse.getStatus()));
+    }
+}

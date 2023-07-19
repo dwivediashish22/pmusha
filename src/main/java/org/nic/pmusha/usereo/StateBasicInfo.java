@@ -1,0 +1,137 @@
+package org.nic.pmusha.usereo;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.nic.pmusha.jsonbutility.JsonUserType;
+import org.nic.pmusha.utility.DateUtils;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+
+/**
+ * The persistent class for the state_basic_info database table.
+ */
+@Entity
+@Table(name = "state_basic_info")
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@TypeDef(name = "JsonUserType", typeClass = JsonUserType.class)
+public class StateBasicInfo implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @JsonIgnore
+    @Column(name = "date_shec")
+    private Date dateShec;
+
+    @Column(name = "funding_ratio")
+    private String fundingRatio;
+
+    @Column(name = "is_formed_through_act_or_notification")
+    private Boolean isFormedThroughActOrNotification;
+
+    @Column(name = "is_shec")
+    private Boolean isShec;
+
+    @Type(type = "JsonUserType")
+    @Column(name = "last_five_meetings_shec", columnDefinition = "jsonb")
+    private List<String> lastFiveMeetingsShec;
+
+    @Column(name = "number_of_districts")
+    private BigInteger numberOfDistricts;
+
+    @Column(name = "role_of_shec")
+    private String roleOfShec;
+
+    @Column(name = "state_category_id")
+    private Integer stateCategoryId;
+    @NotNull
+    @NotBlank
+    @Column(name = "state_code")
+    private String stateCode;
+
+    @Transient
+    private String shecDate;
+
+    public String getShecDate() {
+        if (null != dateShec) {
+            return DateUtils.convertDBSlashDateToString(dateShec);
+        }
+        return shecDate;
+    }
+
+
+    @OneToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(name = "state_profile_document_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private StateProfileDocument stateProfileDocument;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(name = "state_code", referencedColumnName = "state_code")
+    @OrderBy("gender_id")
+    private @Valid Set<StatePopulation> statePopulations;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(name = "state_code", referencedColumnName = "state_code")
+    private @Valid Set<StateHeiDataGerEnrollment> stateHeiDataGerEnrollments;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(name = "state_code", referencedColumnName = "state_code")
+    private @Valid Set<StateHeiDataGpiPtrRatio> stateHeiDataGpiPtrRatios;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(name = "state_code", referencedColumnName = "state_code")
+    private @Valid Set<StateHeiNumberCountEnrollment> stateHeiNumberCountEnrollments;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(name = "state_code", referencedColumnName = "state_code")
+    private @Valid Set<StateNaacAccreditationDetail> stateNaacAccreditationDetails;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(name = "state_code", referencedColumnName = "state_code")
+    private @Valid Set<StateExpenditureHe> stateExpenditureOnHigherEducations;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(name = "state_code", referencedColumnName = "state_code")
+    private @Valid Set<FocusDistrictIndicatorData> focusDistrictIndicatorData;
+
+}

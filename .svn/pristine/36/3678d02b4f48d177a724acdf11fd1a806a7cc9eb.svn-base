@@ -1,0 +1,40 @@
+package org.nic.pmusha.enums;
+
+public interface Constant {
+    public  String COLLEGE = "/college/";
+    public String COLLEGE_LANDSCAPE = "/collegelandscape/";
+    public String STANDALONE = "/standalone/";
+    public String UNIVERSITY = "/university/";
+    public String COLLEGE_TEACHER = "/collegeteacher/";
+    public String STANDALONE_TEACHER = "/standaloneteacher/";
+    public String UNIVERSITY_TEACHER = "/universityteacher/";
+    public String APPLICATION_X_DOWNLOAD = "application/x-download";
+	public static final String EXCEL_XLSX_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+	public static final String EXCEL_XLS_CONTENT_TYPE = "application/vnd.ms-excel";
+    public String CONTENT_DISPOSITION = "Content-Disposition";
+    public String GOV_AISHE_IN = "gov.aishe.in";
+    public String TEACHING_STAFF="-TeachingStaff";
+    public String REGIONAL_CENTER="/regionalCenter/";
+    public String WEBDCF_UNLOCK="/WebdcfUnlock/";
+    public int firstRow=1;
+    public int firstCol=17;
+    public int lastCol=112;
+    public  int ZERO=0;
+    public int ONE=1;
+    public  String COLLEGEOLD = "/college1/";
+    public  String UNIVERSITYSUBMIT = "/UniversitySubmit/";
+    public  String COLLEGESUBMIT = "/CollegeSubmit/";
+    public  String STANDALONESUBMIT = "/StandaloneSubmit/";
+    public String COLLEGE_LANDSCAPE_OLD = "/collegelandscape1/";
+    public String STANDALONEOLD = "/standalone1/";
+    public String UNIVERSITYOLD = "/university1/";
+    public String COLLEGE_TEACHER_OLD = "/collegeteacher1/";
+    public String STANDALONE_TEACHER_OLD = "/standaloneteacher1/";
+    public String UNIVERSITY_TEACHER_OLD = "/universityteacher1/";
+    public String CERTIFICATE = "/certificate/";
+    public String CERTIFICATEOLD = "/certificateold/";
+    public String REGIONAL_CENTER_ONE="/regionalCenter1/";
+    public String SEPCIAL_PERMISSION="/SpecialPermission/";
+    public int BYTE_SIZE=1024;
+    public int FOLDER_SIZE=25;
+}
